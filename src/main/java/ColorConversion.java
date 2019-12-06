@@ -1,45 +1,70 @@
 public class ColorConversion {
 
+    //functions converts data between byte and integer type:
+    //https://stackoverflow.com/questions/7401550/how-to-convert-int-to-unsigned-byte-and-back
     private static int byteToUnsigned(byte b)
     {
         return b & 0xFF;
     }
+    private static byte unsignedToByte(int b)
+    {
+        return (byte) (b);
+    }
 
-    public int[] rgbToRgba(byte[] rgb) {
-        int[] rgba = new int[3];
-        rgba[0] = byteToUnsigned(rgb[0]);
-        rgba[1] = byteToUnsigned(rgb[1]);
-        rgba[2] = byteToUnsigned(rgb[2]);
-        rgba[3] = 1;
+
+    public byte[] rgbToRgba(byte[] rgb) {
+        byte[] rgba = new byte[rgb.length + rgb.length/3];
+        int j = 0;
+        for (int i = 0; i < rgba.length; i++)
+        {
+           if((i + 1) % 4 != 0)
+               rgba[i] = rgb[i - j];
+            else {
+                rgba[i] = Byte.MAX_VALUE;
+                j++;
+            }
+
+        }
         return rgba;
     }
 
-    public byte[] rgbaToRgb(int[]rgba) {
-        byte[] rgb = new byte[2];
-        rgb[0] = (byte) (Byte.MIN_VALUE + rgba[0]);
-        rgb[1] = (byte) (Byte.MIN_VALUE + rgba[1]);
-        rgb[2] = (byte) (Byte.MIN_VALUE + rgba[2]);
+    public byte[] rgbaToRgb(byte[] rgba) {
+        byte[] rgb = new byte[rgba.length - rgba.length / 4];
+
+        int j = 0;
+        for (int i = 0; i < rgba.length; i++)
+        {
+            if((i + 1) % 4 == 0) j++;
+            else rgb[i-j] = rgba[i];
+        }
         return rgb;
     }
 
-    public int[] grayscaleToRgba(byte[] grayscale)
+    public byte[] grayscaleToRgba(byte[] grayscale)
     {
-        int[] rgba = new int[3];
-        rgba[0] = (byteToUnsigned(grayscale[0]) > 127) ? 255 : (byteToUnsigned(grayscale[0]) / 2);
-        rgba[1] = (byteToUnsigned(grayscale[0]) > 127) ? (byteToUnsigned(grayscale[0]) / 2 ) : 0;
-        rgba[2] = (byteToUnsigned(grayscale[0]) > 127) ? (byteToUnsigned(grayscale[0]) / 2 ) : 0;
-        rgba[3] = 1;
+        byte[] rgba = new byte[4 * grayscale.length];
+        int j = 0;
+        for (int i = 0; i < rgba.length; i=i+4)
+        {
+            rgba[i] = grayscale[j];
+            rgba[i+1] = grayscale[j];
+            rgba[i+2] = grayscale[j];
+            rgba[i+3] = Byte.MAX_VALUE;
+            j++;
+        }
         return rgba;
     }
 
-    public byte[] rgbaToGrayscale(int[] rgba)
+    public byte[] rgbaToGrayscale(byte[] rgba)
     {
-        byte[] grayscale = new byte[3];
-        int average = (rgba[0] + rgba[1] + rgba[2]) / 3;
-        grayscale[0] = (byte) (Byte.MIN_VALUE + average);
-        grayscale[1] = (byte) (Byte.MIN_VALUE + average);
-        grayscale[2] = (byte) (Byte.MIN_VALUE + average);
-        grayscale[3] = (byte) ((Byte.MIN_VALUE + average) / 255);
+        byte[] grayscale = new byte[rgba.length / 4];
+        int j = 0;
+        for (int i = 0; i < grayscale.length; i++)
+        {
+                int average = (byteToUnsigned(rgba[j]) + byteToUnsigned(rgba[j+1]) + byteToUnsigned(rgba[j+2])) / 3;
+                grayscale[i] = unsignedToByte(average);
+                j=j+4;
+        }
         return grayscale;
     }
 }
