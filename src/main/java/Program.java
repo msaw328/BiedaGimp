@@ -1,7 +1,7 @@
 public class Program {
     public static void main(String[] args) {
 
-        System.out.println(Byte.MIN_VALUE + (byte) 255);
+        System.out.println((byte) 255 - Byte.MIN_VALUE);
         byte[] rgb = new byte[] {100, 100, 100, 50, 50, 50, 10, 10, 10};
         byte[] grayscale = new byte[] {5,100,127,0,-10,-50};
 
