@@ -13,7 +13,7 @@ public class ImageState {
 
     public byte[] getPixel(int x, int y) {
         if (x >= width || y >= height) {    //throw an error if x or y have wrong values
-            throw new IllegalArgumentException("x must be less than or equal to width and y must be less than or equal to height");
+            throw new IllegalArgumentException("X MUST BE LESS THAN OR EQUAL TO WIDTH AND Y MUST BE LESS THAN OR EQUAL TO HEIGHT!");
         }
         int loc = 4 * (x + y * width);      //multiple by 4 because each pixel contains 4 channels
         byte[] pixel = {buffer[loc], buffer[loc + 1], buffer[loc + 2], buffer[loc + 3]};
@@ -24,15 +24,18 @@ public class ImageState {
         return buffer;
     }
 
-    public void setPixel(int x, int y, byte red, byte green, byte blue, byte alpha) {
+    public void setPixel(int x, int y, byte[] pixel) {
         if (x >= width || y >= height) {     //throw an error if x or y have wrong values
-            throw new IllegalArgumentException("x must be less than or equal to width and y must be less than or equal to height");
+            throw new IllegalArgumentException("X MUST BE LESS THAN OR EQUAL TO WIDTH AND Y MUST BE LESS THAN OR EQUAL TO HEIGHT!");
+        }
+        if (pixel.length != 4) {             //throw an error if pixel arrays length is not proper
+            throw new IllegalArgumentException("PIXEL ARRAY LENGTH MUST BE EQUAL TO 4!");
         }
         int loc = 4*(x + y * width);         //multiple by 4 because each pixel contains 4 channels
-        this.buffer[loc] = red;              //setting each channel to given value
-        this.buffer[loc + 1] = green;
-        this.buffer[loc + 2] = blue;
-        this.buffer[loc + 3] = alpha;
+        this.buffer[loc] = pixel[0];         //setting each channel to given value
+        this.buffer[loc + 1] = pixel[1];
+        this.buffer[loc + 2] = pixel[2];
+        this.buffer[loc + 3] = pixel[3];
     }
 
     public void setBuffer(byte[] buffer) {
@@ -40,6 +43,9 @@ public class ImageState {
     }
 
     public ImageState(int width, int height, byte[] buffer) {
+        if (buffer.length != width * height * 4) {     //throw an error if buffer length is not proper
+            throw new IllegalArgumentException("BUFFER LENGTH MUST BE EQUAL TO (4 * WIDTH * HEIGHT)!");
+        }
         this.width = width;
         this.height = height;
         this.buffer = buffer;

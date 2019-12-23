@@ -10,8 +10,8 @@ public class Program {
         String s = new String(imageState.getPixel(1, 1));
         System.out.println("Pixel at x = 1 and y = 1 : " + s + "\n");
 
-        byte byte1 = 80;
-        imageState.setPixel(1, 1, byte1, byte1, byte1, byte1);       //set pixel at x = 1 and y = 1 to value 80, 80, 80, 80
+        byte[] pixel = {80, 81, 82, 83};
+        imageState.setPixel(1, 1, pixel);       //set pixel at x = 1 and y = 1 to value of variable pixel
 
         String u = new String(imageState.getBuffer());
         System.out.println("Buffer after change : " + u + "\n");
