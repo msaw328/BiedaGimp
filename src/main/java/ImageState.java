@@ -1,3 +1,5 @@
+import java.util.Collections;
+
 public class ImageState {
     private int width;      //width of image
     private int height;     //height of image
@@ -49,5 +51,12 @@ public class ImageState {
         this.width = width;
         this.height = height;
         this.buffer = buffer;
+    }
+
+    public ImageState(ImageState imageState){   //copy constructor
+        this.width = imageState.getWidth();
+        this.height = imageState.getHeight();
+        this.buffer = new byte[imageState.getBuffer().length];
+        System.arraycopy(imageState.getBuffer(), 0, this.buffer, 0, imageState.getBuffer().length);
     }
 }
