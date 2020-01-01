@@ -5,7 +5,7 @@ public class History{
     private List<ImageState> historyAsList = new LinkedList<>();  //List of ImageState changes
     private final int length = 10; //Constant length of history
 
-    public List<ImageState> getHistoryAsList(){
+    public List<ImageState> asList(){
         return historyAsList;
     }
 
