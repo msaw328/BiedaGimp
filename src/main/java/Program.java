@@ -36,5 +36,17 @@ public class Program {
 
         System.out.println("Time measurement for 1920x1080 rectangular selection - performing contains() on every pixel");
         System.out.println(Float.toString(timeInMs) + " ms");
+
+        // Rotate90 test
+        byte[] pix = new byte[] { 100, 100, 100, 100, 0, 0, 0, 100, 0, 0, 0, 100, 100, 100, 100, 100, 100, 100, 100, 100, 0, 0, 0, 100 };
+        int width = 3;
+        int height = 2;
+        ImageState in = new ImageState(width, height, pix);
+        Transform t = new Rotate90();
+        ImageState out = t.apply(in);
+        System.out.println("ROT90");
+        System.out.println("OUTPUT WIDTH: " + Integer.toString(out.getWidth()));
+        System.out.println("OUTPUT HEIGHT: " + Integer.toString(out.getHeight()));
+        System.out.println("OUTPUT DATA: " + Arrays.toString(out.getBuffer()));
     }
 }
