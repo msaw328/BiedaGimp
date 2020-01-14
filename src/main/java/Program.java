@@ -42,9 +42,33 @@ public class Program {
         int width = 3;
         int height = 2;
         ImageState in = new ImageState(width, height, pix);
+
+
+        System.out.println("INPUT");
+        System.out.println("INPUT WIDTH: " + Integer.toString(in.getWidth()));
+        System.out.println("INPUT HEIGHT: " + Integer.toString(in.getHeight()));
+        System.out.println("INPUT DATA: " + Arrays.toString(in.getBuffer()));
+
         Transform t = new Rotate90();
         ImageState out = t.apply(in);
+
         System.out.println("ROT90");
+        System.out.println("OUTPUT WIDTH: " + Integer.toString(out.getWidth()));
+        System.out.println("OUTPUT HEIGHT: " + Integer.toString(out.getHeight()));
+        System.out.println("OUTPUT DATA: " + Arrays.toString(out.getBuffer()));
+
+        t = new MirrorVertical();
+        out = t.apply(in);
+
+        System.out.println("MIRRVERT");
+        System.out.println("OUTPUT WIDTH: " + Integer.toString(out.getWidth()));
+        System.out.println("OUTPUT HEIGHT: " + Integer.toString(out.getHeight()));
+        System.out.println("OUTPUT DATA: " + Arrays.toString(out.getBuffer()));
+
+        t = new MirrorHorizontal();
+        out = t.apply(in);
+
+        System.out.println("MIRRHOR");
         System.out.println("OUTPUT WIDTH: " + Integer.toString(out.getWidth()));
         System.out.println("OUTPUT HEIGHT: " + Integer.toString(out.getHeight()));
         System.out.println("OUTPUT DATA: " + Arrays.toString(out.getBuffer()));

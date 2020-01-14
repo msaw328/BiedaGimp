@@ -1,4 +1,7 @@
+// implements a clockwise rotation of 90 degrees
+
 public class Rotate90 extends Transform {
+
     @Override
     protected int getOutputWidth(ImageState input) {
         return input.getHeight(); // dimensions are swapped
