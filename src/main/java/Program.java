@@ -40,8 +40,8 @@ public class Program {
 
 
         //checking cleaning history list
-        history.clear();
-        System.out.println(history.asList().isEmpty());
+       // history.clear();
+        //System.out.println(history.asList().isEmpty());
 
         //checking pushing and removing items
         byte[] pixel3 = {120, 121, 122, 123};
@@ -51,5 +51,6 @@ public class Program {
         System.out.println(Arrays.toString(history.asList().get(0).getBuffer()));
         System.out.println(history.getNames().get(1));
         System.out.println(Arrays.toString(history.asList().get(1).getBuffer()));
+        System.out.println(history.asList().size());
     }
 }
