@@ -1,20 +1,16 @@
 public class Rotate90 extends Transform {
     @Override
-    public ImageState apply(ImageState input) {
-        int height = input.getWidth(); // dimensions get swapped
-        int width = input.getHeight();
+    protected int getOutputWidth(ImageState input) {
+        return input.getHeight(); // dimensions are swapped
+    }
 
-        byte[] pixels = new byte[width * height * 4];
+    @Override
+    protected int getOutputHeight(ImageState input) {
+        return input.getWidth(); // dimensions are swapped
+    }
 
-        ImageState output = new ImageState(width, height, pixels);
-
-        for(int x = 0; x < width; x++) {
-            for(int y = 0; y < height; y++) {
-                byte[] p = input.getPixel(y, width - x - 1);
-                output.setPixel(x, y, p);
-            }
-        }
-
-        return output;
+    @Override
+    protected byte[] getPixel(int x, int y, int width, int height, ImageState input) {
+        return input.getPixel(y, width - x - 1);
     }
 }
