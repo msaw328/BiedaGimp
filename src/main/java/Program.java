@@ -65,7 +65,7 @@ public class Program {
         System.out.println("INPUT HEIGHT: " + Integer.toString(in.getHeight()));
         System.out.println("INPUT DATA: " + Arrays.toString(in.getBuffer()));
 
-        Transform t = new Rotate90();
+        Transform t = new Rotate(Rotate.ANGLE_270);
         ImageState out = t.apply(in);
 
         System.out.println("ROT90");
