@@ -9,20 +9,23 @@ import java.nio.IntBuffer;
 
 public class JRenderer extends JPanel {
     private ImageState img;
+    private int zoom = 1;
+
+    private static final int MAX_ZOOM = 4;
 
     @Override
     public Dimension getPreferredSize() {
-        return new Dimension(this.img.getWidth(), this.img.getHeight());
+        return new Dimension(this.img.getWidth() * zoom, this.img.getHeight() * zoom);
     }
 
     @Override
     public Dimension getMaximumSize() {
-        return new Dimension(this.img.getWidth(), this.img.getHeight());
+        return new Dimension(this.img.getWidth() * zoom, this.img.getHeight() * zoom);
     }
 
     @Override
     public Dimension getMinimumSize() {
-        return new Dimension(this.img.getWidth(), this.img.getHeight());
+        return new Dimension(this.img.getWidth() * zoom, this.img.getHeight() * zoom);
     }
 
     @Override
@@ -36,7 +39,7 @@ public class JRenderer extends JPanel {
         intBuffer.get(array);
         render.setRGB(0, 0, img.getWidth(), img.getHeight(), array, 0, img.getWidth());
 
-        graphics.drawImage(render, 0, 0, null);
+        graphics.drawImage(render, 0, 0, img.getWidth() * zoom, img.getHeight() * zoom, null);
     }
 
     public JRenderer() {
@@ -46,11 +49,28 @@ public class JRenderer extends JPanel {
         this.setVisible(false);
     }
 
+    public void zoomIn() {
+        if(zoom < MAX_ZOOM) {
+            zoom++;
+            this.setSize(img.getWidth() * zoom, img.getHeight() * zoom);
+            revalidate();
+        }
+    }
+
+    public void zoomOut() {
+        if(zoom > 1) {
+            zoom--;
+            this.setSize(img.getWidth() * zoom, img.getHeight() * zoom);
+            revalidate();
+        }
+    }
+
     public void updateImageState(ImageState img) {
         if(img == null) {
             setVisible(false);
         } else {
             this.img = img;
+            this.zoom = 1;
             this.setSize(img.getWidth(), img.getHeight());
             this.repaint();
             this.setVisible(true);

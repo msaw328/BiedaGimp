@@ -1,14 +1,53 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.util.Random;
 
 public class RenderForm {
     private JPanel contentPane;
     private Box aligner;
     private JRenderer renderer;
+    private boolean zoomKeyPressed = false;
+
+    private static final int ZOOM_KEY = KeyEvent.VK_SHIFT; // use shift for zooming
 
     public RenderForm() {
         createUIComponents();
+
+        contentPane.addMouseWheelListener(new MouseWheelListener() {
+            @Override
+            public void mouseWheelMoved(MouseWheelEvent mouseWheelEvent) {
+                if(!zoomKeyPressed) return;
+
+                if(mouseWheelEvent.getUnitsToScroll() < 0) {
+                    renderer.zoomIn();
+                } else {
+                    renderer.zoomOut();
+                }
+            }
+        });
+        contentPane.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent keyEvent) {
+                super.keyPressed(keyEvent);
+
+                if(keyEvent.getKeyCode() == ZOOM_KEY) {
+                    zoomKeyPressed = true;
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent keyEvent) {
+                super.keyReleased(keyEvent);
+
+                if(keyEvent.getKeyCode() == ZOOM_KEY) {
+                    zoomKeyPressed = false;
+                }
+            }
+        });
     }
 
     public static void main(String[] args) {
@@ -34,32 +73,16 @@ public class RenderForm {
         }
         ImageState img = new ImageState(width, height, data);
 
-        byte[] data2 = new byte[width * height * 4 * 2];
-        for(int i = 0; i < data2.length; i++) {
-            if(i % 4 == 3) {
-                data2[i] = (byte) 255;
-            } else {
-                data2[i] = (byte) (r.nextInt() % 256);
-            }
-        }
-        ImageState img2 = new ImageState(width * 2, height, data2);
         m.renderer.updateImageState(img);
         frame.setVisible(true);
-        try {
-            Thread.sleep(3000);
-            m.renderer.updateImageState(null);
-            Thread.sleep(3000);
-            m.renderer.updateImageState(img2);
-        } catch(Exception e) {
-
-        }
-
     }
 
     private void createUIComponents() {
         contentPane = new JPanel();
         contentPane.setBackground(Color.GRAY);
         contentPane.setLayout(new GridBagLayout());
+        contentPane.setFocusable(true);
+        contentPane.requestFocusInWindow();
 
         aligner = new Box(BoxLayout.Y_AXIS);
         aligner.setBackground(Color.GRAY);
