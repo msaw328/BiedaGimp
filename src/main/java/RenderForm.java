@@ -1,9 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
+import java.awt.event.*;
 import java.util.Random;
 
 public class RenderForm {
@@ -46,6 +43,21 @@ public class RenderForm {
                 if(keyEvent.getKeyCode() == ZOOM_KEY) {
                     zoomKeyPressed = false;
                 }
+            }
+        });
+        contentPane.addFocusListener(new FocusAdapter() { // bugfix, release zoomKey on lsot focus
+            @Override
+            public void focusGained(FocusEvent focusEvent) {
+                super.focusGained(focusEvent);
+
+                zoomKeyPressed = false;
+            }
+
+            @Override
+            public void focusLost(FocusEvent focusEvent) {
+                super.focusLost(focusEvent);
+
+                zoomKeyPressed = false;
             }
         });
     }
