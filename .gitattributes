@@ -1,0 +1,5 @@
+gradle/ linguist-vendored
+build.gradle linguist-vendored
+gradlew linguist-vendored
+gradlew.bat linguist-vendored
+settings.gradle linguist-vendored
