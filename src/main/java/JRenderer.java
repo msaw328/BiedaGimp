@@ -11,7 +11,7 @@ public class JRenderer extends JPanel {
     private ImageState img;
     private int zoom = 1;
 
-    private static final int MAX_ZOOM = 4;
+    private static final int MAX_ZOOM = 7;
 
     @Override
     public Dimension getPreferredSize() {
@@ -51,24 +51,27 @@ public class JRenderer extends JPanel {
         this.setVisible(false);
     }
 
-    public void zoomIn() {
+    public boolean zoomIn() {
         if(zoom < MAX_ZOOM) {
             zoom++;
             this.setSize(img.getWidth() * zoom, img.getHeight() * zoom);
-            revalidate();
         }
+
+        return zoom < MAX_ZOOM;
     }
 
-    public void zoomOut() {
+    public boolean zoomOut() {
         if(zoom > 1) {
             zoom--;
             this.setSize(img.getWidth() * zoom, img.getHeight() * zoom);
-            revalidate();
         }
+
+        return zoom > 1;
     }
 
     public void updateImageState(ImageState img) {
         if(img == null) {
+            this.img = null;
             setVisible(false);
         } else {
             this.img = img;
