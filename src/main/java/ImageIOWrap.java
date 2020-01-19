@@ -23,10 +23,29 @@ public class ImageIOWrap {
         DataBuffer dataBuffer = image.getRaster().getDataBuffer();
         byte[] buffer = ((DataBufferByte) dataBuffer).getData();                        //convert image to byte array of pixels
 
-        if (imageType == BufferedImage.TYPE_BYTE_GRAY)
-            buffer = ColorConversion.grayscaleToArgb(buffer);                           //convert from grayscale to RGBA if necessary
-        else if (imageType == BufferedImage.TYPE_3BYTE_BGR)
-            buffer = ColorConversion.rgbToArgb(buffer);                                 //convert from RGB to RGBA if necessary
+        switch(imageType) {
+            //case BufferedImage.TYPE_INT_ARGB: // no conv needed // BUGFIX#20 no way to test those
+            //    break;
+
+            //case BufferedImage.TYPE_INT_RGB:
+            //    buffer = ColorConversion.rgbToArgb(buffer);
+            //    break;
+            case BufferedImage.TYPE_4BYTE_ABGR:
+                buffer = ColorConversion.abgrToArgb(buffer);
+                break;
+
+            case BufferedImage.TYPE_3BYTE_BGR:
+                buffer = ColorConversion.bgrToArgb(buffer);
+                break;
+
+            case BufferedImage.TYPE_BYTE_GRAY:
+                buffer = ColorConversion.grayscaleToArgb(buffer);
+                break;
+
+            default:
+                throw new IOException("invalid input picture color encoding");
+
+        }
 
         return new ImageState(width, height, buffer);
     }
@@ -35,20 +54,32 @@ public class ImageIOWrap {
         byte[] buffer = imageState.getBuffer();
         BufferedImage image;
 
-        if (imageType == BufferedImage.TYPE_BYTE_GRAY) {
-            buffer = ColorConversion.argbToGrayscale(buffer);                                                                        //convert from RGBA to grayscale if necessary
-            image = new BufferedImage(imageState.getWidth(), imageState.getHeight(), BufferedImage.TYPE_BYTE_GRAY);                  //new empty BufferedImage
-            image.setData(Raster.createRaster(image.getSampleModel(), new DataBufferByte(buffer, buffer.length), new Point()));      //convert from byte array of pixels to BufferedImage
-        } else if (imageType == BufferedImage.TYPE_3BYTE_BGR) {
-            buffer = ColorConversion.argbToRgb(buffer);                                                                               //convert from RGBA to RGB if necessary
-            image = new BufferedImage(imageState.getWidth(), imageState.getHeight(), BufferedImage.TYPE_3BYTE_BGR);                   //new empty BufferedImage
-            image.setData(Raster.createRaster(image.getSampleModel(), new DataBufferByte(buffer, buffer.length), new Point()));       //convert from byte array of pixels to BufferedImage
-        } else {
-            image = new BufferedImage(imageState.getWidth(), imageState.getHeight(), BufferedImage.TYPE_4BYTE_ABGR);                 //new empty BufferedImage
-            image.setData(Raster.createRaster(image.getSampleModel(), new DataBufferByte(buffer, buffer.length), new Point()));     //convert from byte array of pixels to BufferedImage
+        switch(imageType) {
+            //case BufferedImage.TYPE_INT_RGB: // BUGFIX#20 no way to test those
+            //case BufferedImage.TYPE_INT_ARGB: // no conv needed
+            //    break;
+
+            case BufferedImage.TYPE_4BYTE_ABGR:
+                buffer = ColorConversion.argbToAbgr(buffer);
+                break;
+
+            case BufferedImage.TYPE_3BYTE_BGR:
+                buffer = ColorConversion.argbToBgr(buffer);
+                break;
+
+            case BufferedImage.TYPE_BYTE_GRAY:
+                buffer = ColorConversion.argbToGrayscale(buffer);
+                break;
+
+            default:
+                throw new IOException("invalid output picture color encoding");
+
         }
 
-        ImageIO.write(image, "png", new File(path));                                                                   //write to file
+        image = new BufferedImage(imageState.getWidth(), imageState.getHeight(), imageType);
+        image.setData(Raster.createRaster(image.getSampleModel(), new DataBufferByte(buffer, buffer.length), new Point()));
+
+        ImageIO.write(image, "png", new File(path)); //write to file
 
     }
 }

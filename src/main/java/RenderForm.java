@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import java.util.Random;
 
 public class RenderForm {
@@ -72,21 +73,15 @@ public class RenderForm {
         frame.setSize(600, 400);
         frame.setMinimumSize(new Dimension(600, 400));
 
-        int width = 400;
-        int height = 400;
-        byte[] data = new byte[width * height * 4];
-        Random r = new Random();
-        for(int i = 0; i < data.length; i++) {
-            if(i % 4 == 3) {
-                data[i] = (byte) 255;
-            } else {
-                data[i] = (byte) (r.nextInt() % 256);
-            }
-        }
-        ImageState img = new ImageState(width, height, data);
-
-        m.renderer.updateImageState(img);
-        frame.setVisible(true);
+        ImageState img;
+        try {
+            img = ImageIOWrap.read("/home/user/Pictures/meme/arch_sprudogrey.png");
+            m.renderer.updateImageState(img);
+            frame.setVisible(true);
+            ImageIOWrap.write("/home/user/Pictures/meme/arch_sprudo_generated.png", img, BufferedImage.TYPE_3BYTE_BGR);
+        } catch(Exception e) {
+            System.out.println(e.getMessage());
+        };
     }
 
     private void createUIComponents() {

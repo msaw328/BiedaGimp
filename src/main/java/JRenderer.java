@@ -33,8 +33,10 @@ public class JRenderer extends JPanel {
         super.paintComponent(graphics);
 
         // https://stackoverflow.com/a/34318926 much faster than writing single pixel at once with drawLine
-        BufferedImage render = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
-        IntBuffer intBuffer = ByteBuffer.wrap(img.getBuffer()).order(ByteOrder.LITTLE_ENDIAN).asIntBuffer();
+        BufferedImage render = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_ARGB);
+
+        // BUGFIX#20 ByteOrder.LITTLE_ENDIAN breaks colors in render, idk why, has to be BIG_ENDIAN instead
+        IntBuffer intBuffer = ByteBuffer.wrap(img.getBuffer()).order(ByteOrder.BIG_ENDIAN).asIntBuffer();
         int[] array = new int[intBuffer.remaining()];
         intBuffer.get(array);
         render.setRGB(0, 0, img.getWidth(), img.getHeight(), array, 0, img.getWidth());
