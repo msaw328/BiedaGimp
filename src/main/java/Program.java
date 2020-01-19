@@ -6,6 +6,7 @@ public class Program {
 
     public static void main(String[] args) throws IOException {
 
+        /*
         byte[] bytes = new byte[] {100, 100, 100, 100, 101, 101, 101, 101, 102, 102, 102, 102, 103, 103, 103, 103, 104, 104, 104, 104, 105, 105, 105, 105};
 
         ImageState imageState = new ImageState(2, 3, bytes);   //create new ImageState
@@ -59,10 +60,17 @@ public class Program {
         int height = 2;
         ImageState in = new ImageState(width, height, pix);
 
+
         byte[] start = new byte[] { 127, 110, 110, 90, 127, 0, 0, 0, 127, 50, 50, 70 };
 
         System.out.println("argbToRgb: " + Arrays.toString(ColorConversion.argbToRgb(start)));
         System.out.println("argbToBgr: " + Arrays.toString(ColorConversion.argbToBgr(start)));
         System.out.println("argbToAbgr: " + Arrays.toString(ColorConversion.argbToAbgr(start)));
+
+         */
+        ImageState test = ImageIOWrap.read("/home/mikolaj/Pulpit/frog.png");
+        Transform grayscale = new Grayscale();
+        ImageState after = grayscale.apply(test);
+        ImageIOWrap.write("/home/mikolaj/Pulpit/frog_grayscale_iyyyyyyyyyyyyyyyyyyy.png", after, BufferedImage.TYPE_4BYTE_ABGR);
     }
 }
