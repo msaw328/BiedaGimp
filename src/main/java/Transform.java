@@ -9,28 +9,51 @@ public abstract class Transform {
     protected abstract int getOutputHeight(ImageState input);
 
     public final ImageState apply(ImageState input) {
-        return this.apply(input, 1);
+        return this.apply(input, 1, 1);
     }
 
-    public final ImageState apply(ImageState input, int iterations) {
+    public final ImageState apply(ImageState input, int iterations, int threadCount) {
         ImageState partialIn = input;
-        ImageState partialOut;
+
+        Thread[] workers = new Thread[threadCount];
 
         for(int i = 0; i < iterations; i++) { // in each iteration
-            int width = getOutputWidth(partialIn);
-            int height = getOutputHeight(partialIn);
+            final ImageState sharedPartialIn = partialIn;
+
+            int width = getOutputWidth(sharedPartialIn);
+            int height = getOutputHeight(sharedPartialIn);
             byte[] buffer = new byte[width * height * 4];
+            final ImageState sharedPartialOut = new ImageState(width, height, buffer); // create new output imagestate
 
-            partialOut = new ImageState(width, height, buffer); // create new output imagestate
+            int threadHeight = height / threadCount;
 
-            for (int x = 0; x < width; x++) { // apply transform from partialIn to partialOut
-                for (int y = 0; y < height; y++) {
-                    byte[] pixel = getPixel(x, y, width, height, partialIn);
-                    partialOut.setPixel(x, y, pixel);
+            for(int t = 0; t < threadCount; t++) {
+                int startHeight = t * threadHeight;
+
+                workers[t] = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        for (int x = 0; x < width; x++) { // apply transform from partialIn to partialOut
+                            for (int y = startHeight; y < startHeight + threadHeight; y++) {
+                                byte[] pixel = getPixel(x, y, width, height, sharedPartialIn);
+                                sharedPartialOut.setPixel(x, y, pixel);
+                            }
+                        }
+                    }
+                });
+
+                workers[t].start();
+            }
+
+            for(Thread t : workers) { // finish workers
+                try {
+                    t.join();
+                } catch(InterruptedException e) {
+                    System.out.println(e.getMessage());
                 }
             }
 
-            partialIn = partialOut; // set partialIn for next iteration as output of this iteration
+            partialIn = sharedPartialOut; // set partialIn for next iteration as output of this iteration
         }
 
         return partialIn; // after all iterations, result is in partialIn

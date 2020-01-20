@@ -86,17 +86,16 @@ public class RenderForm {
     public static void main(String[] args) {
         JFrame frame = new JFrame("BiedaGimp");
 
+        //5524978574ns
+        //1368075906ns
+
         try {
             ImageState img = ImageIOWrap.read("/home/user/Pictures/meme/arch_sprudo.png");
             History h = new History(img);
-            Transform t = new Sobel();
-            h.push(h.asList().size(), t.apply(img, 1), "sobel1");
+            Transform t = new GaussianBlur(GaussianBlur.MAT5);
+            h.push(h.asList().size(), t.apply(img, 120, 8), "gauss8");
+            h.push(h.asList().size(), t.apply(img, 120, 1), "gauss1");
 
-            h.push(h.asList().size(), t.apply(img, 2), "sobel2");
-
-            h.push(h.asList().size(), t.apply(img, 3), "sobel3");
-
-            h.push(h.asList().size(), t.apply(img, 10), "sobel10");
             RenderForm m = new RenderForm(h);
             frame.setContentPane(m.contentPane);
             frame.setBackground(Color.GRAY);
