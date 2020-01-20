@@ -64,5 +64,9 @@ public class Program {
         System.out.println("argbToRgb: " + Arrays.toString(ColorConversion.argbToRgb(start)));
         System.out.println("argbToBgr: " + Arrays.toString(ColorConversion.argbToBgr(start)));
         System.out.println("argbToAbgr: " + Arrays.toString(ColorConversion.argbToAbgr(start)));
+
+        Colorization color = new Colorization(0,0,20);
+        ImageState img = new ImageState(ImageIOWrap.read("C:/Users/HP/Desktop/retinex_grey.jpg"));
+        ImageIOWrap.write("C:/Users/HP/Desktop/Colorization.png", color.apply(img), BufferedImage.TYPE_4BYTE_ABGR);
     }
 }
