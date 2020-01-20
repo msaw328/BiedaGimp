@@ -89,14 +89,14 @@ public class RenderForm {
         try {
             ImageState img = ImageIOWrap.read("/home/user/Pictures/meme/arch_sprudo.png");
             History h = new History(img);
-            Transform t = new MirrorVertical();
-            h.push(h.asList().size(), t.apply(img), "mirrorv");
+            Transform t = new Sobel();
+            h.push(h.asList().size(), t.apply(img, 1), "sobel1");
 
-            t = new Rotate(Rotate.ANGLE_90);
-            h.push(h.asList().size(), t.apply(img), "rot90");
+            h.push(h.asList().size(), t.apply(img, 2), "sobel2");
 
-            t = new MirrorHorizontal();
-            h.push(h.asList().size(), t.apply(img), "sdpogk");
+            h.push(h.asList().size(), t.apply(img, 3), "sobel3");
+
+            h.push(h.asList().size(), t.apply(img, 10), "sobel10");
             RenderForm m = new RenderForm(h);
             frame.setContentPane(m.contentPane);
             frame.setBackground(Color.GRAY);
