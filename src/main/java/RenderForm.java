@@ -90,12 +90,19 @@ public class RenderForm {
         //1368075906ns
 
         try {
-            ImageState img = ImageIOWrap.read("/home/user/Pictures/meme/arch_sprudo.png");
+            ImageState img = ImageIOWrap.read("/home/user/Pictures/meme/arch_sprudo_artifacts.png");
             History h = new History(img);
             Transform t = new GaussianBlur(GaussianBlur.MAT5);
-            h.push(h.asList().size(), t.apply(img, 120, 8), "gauss8");
-            h.push(h.asList().size(), t.apply(img, 120, 1), "gauss1");
+            h.push(h.asList().size(), t.apply(img, 40, 8), "gauss8");
+            h.push(h.asList().size(), t.apply(img, 40, 1), "gauss1");
+            t = new MirrorVertical();
+            h.push(h.asList().size(), t.apply(img), "mirrorv");
 
+            t = new Sobel();
+            h.push(h.asList().size(), t.apply(img), "rot90");
+
+            t = new MedianFilter();
+            h.push(h.asList().size(), t.apply(img, 40, 8), "sdpogk");
             RenderForm m = new RenderForm(h);
             frame.setContentPane(m.contentPane);
             frame.setBackground(Color.GRAY);

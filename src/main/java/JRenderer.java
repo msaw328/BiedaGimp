@@ -75,7 +75,6 @@ public class JRenderer extends JPanel {
             setVisible(false);
         } else {
             this.img = img;
-            this.zoom = 1;
             this.setSize(img.getWidth(), img.getHeight());
             this.repaint();
             this.setVisible(true);
