@@ -31,6 +31,7 @@ public class RenderForm {
 
     public RenderForm() {
         this.hist = Project.getHistory();
+        RenderForm r = this;
         createUIComponents();
         updateHistoryList();
         renderer.updateImageState(hist.getOriginal());
@@ -91,7 +92,7 @@ public class RenderForm {
         newTransformBt.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                // TODO: apply new transforms and such
+                NewTransformForm.main(r);
             }
         });
     }
@@ -107,12 +108,15 @@ public class RenderForm {
         frame.setVisible(true);
     }
 
-    private void updateHistoryList() {
+    public void updateHistoryList() {
         DefaultListModel model = new DefaultListModel();
         List<String> l = hist.getNames();
         for(String name : l)
             model.addElement(name);
         historyList.setModel(model);
+
+        if(model.getSize() > 0)
+            historyList.setSelectedIndex(model.getSize() - 1);
     }
 
     private void createUIComponents() {

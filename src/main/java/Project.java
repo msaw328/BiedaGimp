@@ -1,3 +1,4 @@
+import java.awt.*;
 import java.io.IOException;
 
 public class Project {
@@ -26,8 +27,16 @@ public class Project {
         ImageIOWrap.write(filename, img, imageType);
     }
 
-    public static ImageState applyTransform(Transform transform, ImageState imageState){
-        return transform.apply(imageState);
+    public static void applyTransformUnderName(Transform transform, int iterations, int threads, String name){
+        ImageState input;
+        if(selection == SELECTION_ORIGINAL)
+            input = history.getOriginal();
+        else
+            input = history.asList().get(selection);
+
+        ImageState newImg = transform.apply(input, iterations, threads);
+
+        history.push(selection, newImg, name);
     }
 
     public static History getHistory() {

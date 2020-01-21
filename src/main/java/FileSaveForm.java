@@ -13,7 +13,7 @@ public class FileSaveForm {
         JFrame frame = new JFrame("Save file");
         FileSaveForm form = new FileSaveForm();
         frame.setContentPane(form.contentPane);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
 
