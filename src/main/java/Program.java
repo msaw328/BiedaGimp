@@ -1,13 +1,19 @@
+import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileView;
+import javax.swing.plaf.FileChooserUI;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
 public class Program {
 
     public static void main(String[] args) throws IOException {
-        ImageState test = ImageIOWrap.read("/home/mikolaj/Pulpit/Stworcy.jpg");
-        Transform sobel = new WeirdSobel();
-        ImageState after = sobel.apply(test);
-        ImageIOWrap.write("/home/mikolaj/Pulpit/Stworcy_WeirdSobel.png", after, BufferedImage.TYPE_4BYTE_ABGR);
+        // first we need to open a file
+        FileLoadForm.main();
+
+        // then we display workspace
+        RenderForm.main();
     }
 }

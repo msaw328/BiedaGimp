@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
@@ -10,6 +11,9 @@ public class RenderForm {
     private JPanel contentPane;
     private JPanel renderPane;
     private JPanel sidePane;
+    private JPanel sidePaneLeft;
+    private JPanel saveFilePane;
+    private JButton saveFileBt;
     private JScrollPane scrollPane;
     private JPanel zoomPane;
     private JRenderer renderer;
@@ -25,8 +29,8 @@ public class RenderForm {
     private JButton zoomInBt;
     private JButton zoomOutBt;
 
-    public RenderForm(History hist) {
-        this.hist = hist;
+    public RenderForm() {
+        this.hist = Project.getHistory();
         createUIComponents();
         updateHistoryList();
         renderer.updateImageState(hist.getOriginal());
@@ -66,12 +70,21 @@ public class RenderForm {
             @Override
             public void valueChanged(ListSelectionEvent listSelectionEvent) {
                 int index = historyList.getSelectedIndex();
+                Project.setSelection(index);
+
                 if(index > -1) {
                     ImageState img = hist.asList().get(index);
 
                     renderer.updateImageState(img);
                     contentPane.revalidate();
                 }
+            }
+        });
+
+        saveFileBt.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                FileSaveForm.main();
             }
         });
 
@@ -83,36 +96,15 @@ public class RenderForm {
         });
     }
 
-    public static void main(String[] args) {
-        JFrame frame = new JFrame("BiedaGimp");
-
-        //5524978574ns
-        //1368075906ns
-
-        try {
-            ImageState img = ImageIOWrap.read("/home/user/Pictures/meme/arch_sprudo_artifacts.png");
-            History h = new History(img);
-            Transform t = new GaussianBlur(GaussianBlur.MAT5);
-            h.push(h.asList().size(), t.apply(img, 40, 8), "gauss8");
-            h.push(h.asList().size(), t.apply(img, 40, 1), "gauss1");
-            t = new MirrorVertical();
-            h.push(h.asList().size(), t.apply(img), "mirrorv");
-
-            t = new Sobel();
-            h.push(h.asList().size(), t.apply(img), "rot90");
-
-            t = new MedianFilter();
-            h.push(h.asList().size(), t.apply(img, 40, 8), "sdpogk");
-            RenderForm m = new RenderForm(h);
-            frame.setContentPane(m.contentPane);
-            frame.setBackground(Color.GRAY);
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.pack();
-            frame.setSize(1500, 800);
-            frame.setVisible(true);
-        } catch(Exception e) {
-            System.out.println(e.getMessage());
-        };
+    public static void main() {
+        JFrame frame = new JFrame("BiedaGimp - Workspace");
+        RenderForm m = new RenderForm();
+        frame.setContentPane(m.contentPane);
+        frame.setBackground(Color.GRAY);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
+        frame.setSize(1500, 800);
+        frame.setVisible(true);
     }
 
     private void updateHistoryList() {
@@ -144,6 +136,21 @@ public class RenderForm {
         sidePane.setPreferredSize(new Dimension(250, 0));
         sidePane.setBackground(Color.DARK_GRAY);
         sidePane.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+
+        sidePaneLeft = new JPanel();
+        sidePaneLeft.setLayout(new BorderLayout());
+        sidePaneLeft.setPreferredSize(new Dimension(250, 0));
+        sidePaneLeft.setBackground(Color.DARK_GRAY);
+        sidePaneLeft.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+
+        saveFileBt = new JButton();
+        saveFileBt.setText("Save image");
+
+        saveFilePane = new JPanel();
+        saveFilePane.setLayout(new GridBagLayout());
+        saveFilePane.setPreferredSize(new Dimension(0, 80));
+        saveFilePane.setBackground(Color.DARK_GRAY);
+        saveFilePane.add(saveFileBt);
 
         zoomPane = new JPanel();
         zoomPane.setLayout(new GridBagLayout());
@@ -186,7 +193,9 @@ public class RenderForm {
         sidePane.add(zoomPane, BorderLayout.PAGE_END);
         sidePane.add(historyPane, BorderLayout.CENTER);
         sidePane.add(newTransformPane, BorderLayout.PAGE_START);
+        sidePaneLeft.add(saveFilePane, BorderLayout.PAGE_START);
         contentPane.add(scrollPane, BorderLayout.CENTER);
         contentPane.add(sidePane, BorderLayout.LINE_END);
+        contentPane.add(sidePaneLeft, BorderLayout.LINE_START);
     }
 }
