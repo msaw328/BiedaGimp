@@ -87,15 +87,17 @@ public class RenderForm {
         JFrame frame = new JFrame("BiedaGimp");
 
         try {
-            ImageState img = ImageIOWrap.read("/home/user/Pictures/meme/arch_sprudo.png");
+            ImageState img = ImageIOWrap.read("/home/user/Pictures/meme/arch_sprudo_artifacts.png");
             History h = new History(img);
             Transform t = new MirrorVertical();
             h.push(h.asList().size(), t.apply(img), "mirrorv");
 
-            t = new Rotate(Rotate.ANGLE_90);
+            t = new Sobel();
             h.push(h.asList().size(), t.apply(img), "rot90");
 
-            t = new MirrorHorizontal();
+            t = new MedianFilter();
+
+            img = t.apply(t.apply(t.apply(t.apply(t.apply(t.apply(img))))));
             h.push(h.asList().size(), t.apply(img), "sdpogk");
             RenderForm m = new RenderForm(h);
             frame.setContentPane(m.contentPane);

@@ -22,7 +22,7 @@ public class Sobel extends Effect {
 
     // checks if point x, y is within given bounds
     private boolean isWithinBounds(int x, int y, int width, int height) {
-        return (x > 0 && x < width) && (y > 0 && y < height);
+        return (x >= 0 && x < width) && (y >= 0 && y < height);
     }
 
     @Override

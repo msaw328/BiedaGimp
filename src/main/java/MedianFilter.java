@@ -1,47 +1,54 @@
 import java.lang.reflect.Array;
-import java.util.Arrays;
+import java.util.*;
 
 public class MedianFilter extends Effect {
-    private double medianR;
-    private double medianG;
-    private double medianB;
-    private byte[] pixel;
-    private int[][] numArray;
-    private double[] medians = {0, 0, 0};   //contains medians of each RGB channel
+
+    private boolean isWithinBounds(int x, int y, int width, int height) {
+        return (x >= 0 && x < width) && (y >= 0 && y < height);
+    }
 
     @Override
     protected byte[] getPixel(int x, int y, int width, int height, ImageState input) {
-        int position = 0;
-        int leftPixels = 0;
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                if (!isWithinBounds(x + i - 1, y + j - 1, width, height)) leftPixels++; //counting avoided pixels
-            }
-        }
-        numArray = new int[3][9-leftPixels];
+        ArrayList<Integer> listR = new ArrayList<>(8);
+        ArrayList<Integer> listG = new ArrayList<>(8);
+        ArrayList<Integer> listB = new ArrayList<>(8);
 
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                if (!isWithinBounds(x + i - 1, y + j - 1, width, height)) continue;
-                pixel = input.getPixel(x + i - 1, y + j - 1);
-                numArray[0][position] = pixel[1] & 0x0FF;  //r
-                numArray[1][position] = pixel[2] & 0x0FF;  //g
-                numArray[2][position] = pixel[3] & 0x0FF;  //b
-                position++;
+                int currentX = x + i - 1;
+                int currentY = y + j - 1;
+
+                if(currentX == x && currentY == y) continue; // dont count current pixel in
+
+                if (!isWithinBounds(currentX, currentY, width, height)) continue;
+
+                byte[] pix = input.getPixel(currentX, currentY);
+
+                listR.add(pix[1] & 0xFF);
+                listG.add(pix[2] & 0xFF);
+                listB.add(pix[3] & 0xFF);
             }
         }
 
-        for(int i =0; i< medians.length; i++) {
-            Arrays.sort(numArray[i]);
-            if (numArray[i].length % 2 == 0)
-                medians[i] = ((double) numArray[i][numArray[i].length / 2] + (double) numArray[i][numArray[i].length / 2 - 1]) / 2;
-            else
-                medians[i] = (double) numArray[i][numArray[i].length / 2];
-        }
-        return new byte[]{input.getPixel(x,y)[0], (byte)medians[0], (byte)medians[1], (byte)medians[2]};
-    }
+        Collections.sort(listR);
+        Collections.sort(listG);
+        Collections.sort(listB);
 
-    private boolean isWithinBounds(int x, int y, int width, int height) {
-        return (x > 0 && x < width) && (y > 0 && y < height);
+        int len = listR.size();
+
+        int medianR;
+        int medianG;
+        int medianB;
+        if(len % 2 == 0) {
+            medianR = (listR.get(len / 2) + listR.get((len - 1) / 2)) / 2;
+            medianG = (listG.get(len / 2) + listG.get((len - 1) / 2)) / 2;
+            medianB = (listB.get(len / 2) + listB.get((len - 1) / 2)) / 2;
+        } else {
+            medianR = listR.get(len / 2);
+            medianG = listG.get(len / 2);
+            medianB = listB.get(len / 2);
+        }
+
+        return new byte[] { input.getPixel(x, y)[0], (byte) medianR, (byte) medianG, (byte) medianB };
     }
 }
